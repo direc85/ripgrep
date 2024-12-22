@@ -7,6 +7,7 @@ License:    MIT
 URL:        https://github.com/direc85/ripgrep
 Source0:    %{name}-%{version}.tar.xz
 Source1:    vendor.tar.xz
+Source2:    config.toml
 BuildRequires:  rust
 BuildRequires:  cargo
 BuildRequires:  rust-std-static
@@ -20,7 +21,17 @@ first class support on Windows, macOS and Linux.
 %prep
 %setup -q -n %{name}-%{version}/%{name}
 
+# vendor.tar.xz
+rm -f vendor
+tar xf %SOURCE1
+
+# .cargo/config.toml
+mkdir -p .cargo
+cp %SOURCE2 .cargo/
+
 %build
+
+export CARGO_NET_OFFLINE=true
 
 # https://git.sailfishos.org/mer-core/gecko-dev/blob/master/rpm/xulrunner-qt5.spec#L224
 # When cross-compiling under SB2 rust needs to know what arch to emit

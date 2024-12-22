@@ -6,6 +6,7 @@ Group:      Application/System
 License:    MIT
 URL:        https://github.com/direc85/ripgrep
 Source0:    %{name}-%{version}.tar.xz
+Source1:    vendor.tar.xz
 BuildRequires:  rust
 BuildRequires:  cargo
 BuildRequires:  rust-std-static

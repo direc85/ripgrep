@@ -1,6 +1,6 @@
 Name:       ripgrep
 Summary:    Line-oriented search tool similar to The Silver Searcher, ack and grep
-Version:    13.0.0
+Version:    14.1.1
 Release:    1
 Group:      Application/System
 License:    MIT

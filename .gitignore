@@ -1,4 +1,5 @@
-*.tar.gz
-ripgrep-*/
 RPMS/
-documentation.list
+SRPMS/
+BUILD/
+BUILDROOT/
+installroot/

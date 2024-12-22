@@ -5,7 +5,7 @@ Release:    1
 Group:      Application/System
 License:    MIT
 URL:        https://github.com/direc85/ripgrep
-Source0:    %{name}%-{version}.tar.xz
+Source0:    %{name}-%{version}.tar.xz
 BuildRequires:  rust
 BuildRequires:  cargo
 BuildRequires:  rust-std-static
@@ -20,17 +20,6 @@ first class support on Windows, macOS and Linux.
 %setup -q -n %{name}-%{version}/%{name}
 
 %build
-
-if [ ! -f "%{version}.tar.gz" ]
-then
-  curl -LO https://github.com/BurntSushi/ripgrep/archive/refs/tags/%{version}.tar.gz
-fi
-
-if [ ! -d "%{name}-%{version}" ]
-then
-  tar xfz %{version}.tar.gz
-  sed -i 's/debug = 1/debug = 0\nlto = true/' %{name}-%{version}/Cargo.toml
-fi
 
 # https://git.sailfishos.org/mer-core/gecko-dev/blob/master/rpm/xulrunner-qt5.spec#L224
 # When cross-compiling under SB2 rust needs to know what arch to emit
@@ -86,23 +75,26 @@ cargo build \
   -j 1 \
   --verbose \
   --release \
-  --features=pcre2 \
-  --manifest-path %{_sourcedir}/../%{name}-%{version}/Cargo.toml
+  --features=pcre2
 
 %install
-rm -rf %{buildroot}
 
 %ifarch %arm
-targetdir=%{_sourcedir}/../%{name}-%{version}/target/armv7-unknown-linux-gnueabihf/release
+SB2_RUST_TARGET_TRIPLE=armv7-unknown-linux-gnueabihf
 %endif
 %ifarch aarch64
-targetdir=%{_sourcedir}/../%{name}-%{version}/target/aarch64-unknown-linux-gnu/release
+SB2_RUST_TARGET_TRIPLE=aarch64-unknown-linux-gnu
 %endif
 %ifarch %ix86
-targetdir=%{_sourcedir}/../%{name}-%{version}/target/i686-unknown-linux-gnu/release
+SB2_RUST_TARGET_TRIPLE=i686-unknown-linux-gnu
 %endif
 
-install -D $targetdir/rg %{buildroot}%{_bindir}/rg
+install -D target/$SB2_RUST_TARGET_TRIPLE/release/rg %{buildroot}%{_bindir}/rg
 
 %files
 %{_bindir}/*
+
+%changelog
+
+* Sun Dec 22 2024 Matti Viljanen <matti.viljanen@kapsi.fi> - 14.0.0-1
+- Initial Chum release

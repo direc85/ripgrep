@@ -5,9 +5,9 @@ Release:    1
 Group:      Application/System
 License:    MIT
 URL:        https://github.com/direc85/ripgrep
-Source0:    %{version}.tar.gz
-BuildRequires:  rust >= 1.52.1+git1-1
-BuildRequires:  cargo >= 1.52.1+git1-1
+Source0:    %{name}%-{version}.tar.xz
+BuildRequires:  rust
+BuildRequires:  cargo
 BuildRequires:  rust-std-static
 BuildRequires:  curl
 
@@ -17,7 +17,7 @@ directory for a regex pattern while respecting gitignore rules. ripgrep has
 first class support on Windows, macOS and Linux.
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-%{version}/%{name}
 
 %build
 
@@ -31,9 +31,6 @@ then
   tar xfz %{version}.tar.gz
   sed -i 's/debug = 1/debug = 0\nlto = true/' %{name}-%{version}/Cargo.toml
 fi
-
-rustc --version
-cargo --version
 
 # https://git.sailfishos.org/mer-core/gecko-dev/blob/master/rpm/xulrunner-qt5.spec#L224
 # When cross-compiling under SB2 rust needs to know what arch to emit
@@ -92,14 +89,9 @@ cargo build \
   --features=pcre2 \
   --manifest-path %{_sourcedir}/../%{name}-%{version}/Cargo.toml
 
-# << build post
-
 %install
 rm -rf %{buildroot}
-# >> install pre
-# << install pre
 
-# >> install post
 %ifarch %arm
 targetdir=%{_sourcedir}/../%{name}-%{version}/target/armv7-unknown-linux-gnueabihf/release
 %endif
@@ -112,10 +104,5 @@ targetdir=%{_sourcedir}/../%{name}-%{version}/target/i686-unknown-linux-gnu/rele
 
 install -D $targetdir/rg %{buildroot}%{_bindir}/rg
 
-# << install post
-
 %files
-# >> files
-%defattr(0755,root,root,-)
 %{_bindir}/*
-# << files
